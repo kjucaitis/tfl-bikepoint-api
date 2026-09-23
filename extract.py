@@ -38,15 +38,26 @@ while attempt < max_retry:
         # Convert the response to JSON format
         data = response.json()
 
-        # Open the file in write mode and save the extracted data
-        with open(filename, 'w') as file:
-            json.dump(data, file)
+        # Check the API returned any data (is not all empty) before trying to save it
+        if len(data) > 0:
+            try:
 
-        # Print the success comment
-        print(f'File {filename} was successfully saved')
+                # Open the file in write mode and save the extracted data
+                with open(filename, 'w') as file:
+                    json.dump(data, file)
 
-        # Add a break clause to stop the while loop if the pull was successful
-        break
+                # Print the success comment
+                print(f'File {filename} was successfully saved')
+
+            # Handle errors that occur while creating or writing to the file
+            except Exception as e:
+                print(f'An error has occured: {e}')
+            break
+
+        # If API request succeeded, but not data was returned
+        else:
+            print('No data returned')
+            break
 
     # ELIF statement for client or server-side errors
     elif status_code < 200 or status_code >= 500:
@@ -60,7 +71,3 @@ while attempt < max_retry:
 
         # Final break to stop the while loop fully
         break
-
-
-
-
