@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 import time
 import logging
+from dotenv import load_dotenv
 
 # API endpoint where we are extracting the data from
 url = 'https://api.tfl.gov.uk/BikePoint/'
