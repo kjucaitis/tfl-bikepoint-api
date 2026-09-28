@@ -4,6 +4,7 @@ import requests
 import json
 from datetime import datetime
 import time
+import logging
 
 # API endpoint where we are extracting the data from
 url = 'https://api.tfl.gov.uk/BikePoint/'
@@ -17,6 +18,22 @@ timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
 # Create the filename for the extracted data
 filename = f"{data_folder}/bike_points_{timestamp}.json"
+
+# Create a folder for log files
+log_dir = 'log'
+os.makedirs(log_dir, exist_ok=True)
+log_filename = f"{data_folder}/bike_points_{timestamp}.json"
+
+# Configure logging so messages are written to the log file
+logging.basicConfig(
+    filename = log_filename,
+    format = '%(asctime)s - %(levelname)s - %(message)s',
+    level = logging.INFO
+)
+
+# Create a logger and confirm that it has been successfully set up
+logger = logging.getLogger()
+logger.info('Logger successfully initialised')
 
 # Set up variables for retry settings in case API fails
 max_retry = 5
@@ -46,17 +63,23 @@ while attempt < max_retry:
                 with open(filename, 'w') as file:
                     json.dump(data, file)
 
-                # Print the success comment
+                # Print the success comments
                 print(f'File {filename} was successfully saved')
+                logger.info(f'File {filename} was successfully saved')
 
             # Handle errors that occur while creating or writing to the file
             except Exception as e:
                 print(f'An error has occured: {e}')
+                logger.error(f'An error has occured: {e}')
             break
 
         # If API request succeeded, but not data was returned
         else:
             print('No data returned')
+
+            # Add logger warning
+            logger.warning('No data returned')
+
             break
 
     # ELIF statement for client or server-side errors
@@ -65,9 +88,15 @@ while attempt < max_retry:
         attempt += 1
         print(f'Status code: {status_code}. Retrying. Attempt number {attempt}')
 
+        # Add logger info
+        logger.info(f'Status code: {status_code}. Retrying. Attempt number {attempt}')
+
     # ELSE statement for if the error is 300-400, we want to emphasize the need for fixing
     else:
         print(f'Error. Status code {status_code}. Fixing required')
+
+        # Add logger info
+        logger.critical(f'Error. Status code {status_code}. Fixing required')
 
         # Final break to stop the while loop fully
         break
