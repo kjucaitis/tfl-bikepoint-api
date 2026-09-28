@@ -26,7 +26,7 @@ timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 log_dir = 'log'
 os.makedirs(log_dir, exist_ok=True)
 data_folder = 'data'
-log_filename = f"{data_folder}/bike_points_{timestamp}.json"
+log_filename = f"{log_dir}/bike_points_{timestamp}.log"
 
 # Configure logging so messages are written to the log file
 logging.basicConfig(
