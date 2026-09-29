@@ -11,14 +11,14 @@ from dotenv import load_dotenv
 url = 'https://api.tfl.gov.uk/BikePoint/'
 
 # Create a folder to store our extracted data
-data_folder = 'data'
-os.makedirs(data_folder, exist_ok=True)
+data_dir = 'data'
+os.makedirs(data_dir, exist_ok=True)
 
 # Create a timestamp for the filename
 timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
 # Create the filename for the extracted data
-filename = f"{data_folder}/bike_points_{timestamp}.json"
+filename = f"{data_dir}/bike_points_{timestamp}.json"
 
 # Create a folder for log files
 log_dir = 'log'
