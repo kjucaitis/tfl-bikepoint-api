@@ -1,0 +1,29 @@
+name: Bike Point Ingestion
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: windows-latest
+    environment: des8-bikepoint # environment we set up earlier in settings to save the secrets
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v7 # github actions
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: 3.12
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      - name: Run Python
+        env: #secrets we saved in the environment earlier
+          AWS_ACCESS_KEY: ${{secrets.AWS_ACCESS_KEY}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_BUCKET_NAME: ${{secrets.AWS_BUCKET_NAME}}
+        run: python main.py
